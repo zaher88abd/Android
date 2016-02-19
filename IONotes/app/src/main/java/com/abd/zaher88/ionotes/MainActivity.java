@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
         Uri uriNote = getContentResolver().insert(NotesProvider.CONTENT_URI, values);
         Log.d("MainActivity", "Insterted note " + uriNote.getLastPathSegment());
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
