@@ -1,8 +1,10 @@
 package com.abd.zaher88.ionotes;
 
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -40,20 +43,20 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        InsertNote("New Note");
+
         Cursor cursor = getContentResolver().query(NotesProvider.CONTENT_URI, DBOpenHelper.All_COLUMNS, null, null, null);
         String[] from = {DBOpenHelper.NOTE_TEXT};
-        int[] to = {android.R.id.text1};
+        int[] to = {R.id.tvNote};
         cursorAdapter = new SimpleCursorAdapter(this,
-                android.R.layout.simple_list_item_1
+                R.layout.note_list_item
                 , cursor, from, to, 0);
         ListView listView = (ListView) findViewById(android.R.id.list);
         listView.setAdapter(cursorAdapter);
 
-        getLoaderManager().initLoader(0,null,this);
+        getLoaderManager().initLoader(0, null, this);
     }
 
-    private void InsertNote(String text) {
+    private void insertNote(String text) {
         ContentValues values = new ContentValues();
         values.put(DBOpenHelper.NOTE_TEXT, text);
         Uri uriNote = getContentResolver().insert(NotesProvider.CONTENT_URI, values);
@@ -69,17 +72,52 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
+        switch (id) {
+            case R.id.action_create_sample:
+                insertSampleData();
+                break;
+            case R.id.action_delete_all:
+                deleteAllData();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+                break;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteAllData() {
+        DialogInterface.OnClickListener dialogClickListener =
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int button) {
+                        if (button == DialogInterface.BUTTON_POSITIVE) {
+                            //Insert Data management code here
+                            getContentResolver().delete(NotesProvider.CONTENT_URI,null,null);
+                            restartLoader();
+                            Toast.makeText(MainActivity.this,
+                                    getString(R.string.all_deleted),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.are_you_sure))
+                .setPositiveButton(getString(android.R.string.yes), dialogClickListener)
+                .setNegativeButton(getString(android.R.string.no), dialogClickListener)
+                .show();
+    }
+
+    private void insertSampleData() {
+        insertNote("New Sample Data");
+        insertNote("Multeline\nnote");
+        insertNote("zaher samer abd alsalam abrahim abd ulmoula ");
+        restartLoader();
+    }
+
+    private void restartLoader() {
+        getLoaderManager().restartLoader(0, null, this);
     }
 
     @Override

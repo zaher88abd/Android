@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">I/ONotes</string>
     <string name="action_settings">Settings</string>
+    <string name="Ceate_Sample_Data">Create Sample Data</string>
+    <string name="Delete_all_note">Delete all notes</string>
+    <string name="are_you_sure">Are You Sure ?</string>
+    <string name="all_deleted">\"All notes deleted\"</string>
 </resources>
