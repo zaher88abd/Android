@@ -1,6 +1,7 @@
 package com.abd.zaher88.ionotes;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +12,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CursorAdapter;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,11 +34,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        InsertNote("New Note");
+        Cursor cursor=getContentResolver().query(NotesProvider.CONTENT_URI,DBOpenHelper.All_COLUMNS,null,null,null);
+        String[] from={DBOpenHelper.NOTE_TEXT};
+        int[] to={android.R.id.text1};
+        CursorAdapter cursorAdapter=new SimpleCursorAdapter(this,
+                android.R.layout.simple_list_item_1
+                ,cursor,from,to,0);
+        ListView listView=(ListView) findViewById(android.R.id.list);
+        listView.setAdapter(cursorAdapter);
+    }
+
+    private void InsertNote(String text) {
         ContentValues values = new ContentValues();
-        values.put(DBOpenHelper.NOTE_TEXT, "New Note");
+        values.put(DBOpenHelper.NOTE_TEXT, text);
         Uri uriNote = getContentResolver().insert(NotesProvider.CONTENT_URI, values);
         Log.d("MainActivity", "Insterted note " + uriNote.getLastPathSegment());
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
