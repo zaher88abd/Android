@@ -5,12 +5,11 @@ import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,12 +18,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final int EDITOR_REQUEST_CODE = 1001;
     CursorAdapter cursorAdapter;
 
     @Override
@@ -34,22 +33,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-
-        Cursor cursor = getContentResolver().query(NotesProvider.CONTENT_URI, DBOpenHelper.All_COLUMNS, null, null, null);
-        String[] from = {DBOpenHelper.NOTE_TEXT};
-        int[] to = {R.id.tvNote};
-        cursorAdapter = new SimpleCursorAdapter(this,
-                R.layout.note_list_item
-                , cursor, from, to, 0);
+        cursorAdapter = new NoteCurserAdapter(this, null, 0);
         ListView listView = (ListView) findViewById(android.R.id.list);
         listView.setAdapter(cursorAdapter);
 
@@ -93,7 +77,7 @@ public class MainActivity extends AppCompatActivity
                     public void onClick(DialogInterface dialog, int button) {
                         if (button == DialogInterface.BUTTON_POSITIVE) {
                             //Insert Data management code here
-                            getContentResolver().delete(NotesProvider.CONTENT_URI,null,null);
+                            getContentResolver().delete(NotesProvider.CONTENT_URI, null, null);
                             restartLoader();
                             Toast.makeText(MainActivity.this,
                                     getString(R.string.all_deleted),
@@ -111,7 +95,7 @@ public class MainActivity extends AppCompatActivity
 
     private void insertSampleData() {
         insertNote("New Sample Data");
-        insertNote("Multeline\nnote");
+        insertNote("Multeline \n note");
         insertNote("zaher samer abd alsalam abrahim abd ulmoula ");
         restartLoader();
     }
@@ -133,5 +117,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         cursorAdapter.swapCursor(null);
+    }
+
+    public void openEditorActivity(View view) {
+        Intent intent=new Intent(this,EditorNoteActivity.class);
+        startActivityForResult(intent,EDITOR_REQUEST_CODE);
     }
 }

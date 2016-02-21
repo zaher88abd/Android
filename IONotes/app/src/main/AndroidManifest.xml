@@ -18,10 +18,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
             android:name=".NotesProvider"
             android:authorities="com.abd.zaher88.ionotes.notesprovider"
-            android:exported="false"/>
+            android:exported="false" />
+
+        <activity android:name=".EditorNoteActivity"></activity>
     </application>
 
 </manifest>
