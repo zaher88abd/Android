@@ -32,6 +32,7 @@ public class EditorNoteActivity extends AppCompatActivity {
             action = Intent.ACTION_EDIT;
             noteFilter = DBOpenHelper.NOTE_ID + "=" + uri.getLastPathSegment();
             Cursor cursor = getContentResolver().query(uri, DBOpenHelper.All_COLUMNS, noteFilter, null, null);
+            assert cursor != null;
             cursor.moveToFirst();
             oldText = cursor.getString(cursor.getColumnIndex(DBOpenHelper.NOTE_TEXT));
             editor.setText(oldText);
@@ -42,7 +43,7 @@ public class EditorNoteActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (action.equals(Intent.ACTION_EDIT))
-            getMenuInflater().inflate(R.menu.menu_main,menu);
+            getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -52,8 +53,18 @@ public class EditorNoteActivity extends AppCompatActivity {
             case R.id.home:
                 finishEditing();
                 break;
+            case R.id.action_Delete:
+                deleteNote();
+                break;
         }
         return true;
+    }
+
+    private void deleteNote() {
+        getContentResolver().delete(NotesProvider.CONTENT_URI, noteFilter, null);
+        Toast.makeText(this, "Note Deleted", Toast.LENGTH_LONG).show();
+        setResult(RESULT_OK);
+        finish();
     }
 
     private void finishEditing() {
@@ -67,7 +78,8 @@ public class EditorNoteActivity extends AppCompatActivity {
                 }
                 break;
             case Intent.ACTION_EDIT:
-                if (newText.length() == 0) {    //deleteNote();
+                if (newText.length() == 0) {
+                    deleteNote();
                 } else if (oldText.equals(newText)) {
                     setResult(RESULT_CANCELED);
                 } else {
@@ -80,10 +92,10 @@ public class EditorNoteActivity extends AppCompatActivity {
     }
 
     private void updateNote(String newText) {
-        ContentValues values=new ContentValues();
-        values.put(DBOpenHelper.NOTE_TEXT,newText);
+        ContentValues values = new ContentValues();
+        values.put(DBOpenHelper.NOTE_TEXT, newText);
         getContentResolver().update(NotesProvider.CONTENT_URI, values, noteFilter, null);
-        Toast.makeText(this, R.string.Done_Updated,Toast.LENGTH_SHORT);
+        Toast.makeText(this, R.string.Done_Updated, Toast.LENGTH_SHORT).show();
         setResult(RESULT_OK);
 
     }

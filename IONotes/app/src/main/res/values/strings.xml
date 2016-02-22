@@ -8,4 +8,6 @@
     <string name="TitleNewNote">New Note</string>
     <string name="Done_Updated">the note updated</string>
     <string name="Delete">action_Delete</string>
+    <string name="note">note</string>
+    <string name="enter_note_here">Enter note here</string>
 </resources>

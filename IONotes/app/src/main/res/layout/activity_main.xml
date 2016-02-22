@@ -30,8 +30,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:background="@color/colorPrimaryDark"
-        app:backgroundTint="@color/colorPrimaryDark"
+        android:onClick="openEditorActivity"
         android:src="@drawable/ic_new"
-        android:onClick="openEditorActivity"/>
+        app:backgroundTint="@color/colorPrimaryDark" />
 
 </android.support.design.widget.CoordinatorLayout>

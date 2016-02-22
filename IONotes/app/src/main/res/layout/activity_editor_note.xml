@@ -12,6 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="top"
-        android:id="@+id/edit_text"/>
+        android:id="@+id/edit_text"
+        android:hint="@string/enter_note_here"
+        android:inputType="textMultiLine|textCapSentences"/>
 
 </RelativeLayout>
